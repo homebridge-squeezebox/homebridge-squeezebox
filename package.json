@@ -1,11 +1,11 @@
 {
   "name": "homebridge-squeezebox",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Martin Purcell <martin.purcell@gmail.com>",
   "description": "Squeezebox plugin for homebridge: https://github.com/nfarina/homebridge",
   "license": "ISC",
   "keywords": [
-    "homebridge-plugin"
+    "homebridge-plugin","homebridge","squeezebox"
   ],
   "repository": {
     "type": "git",
@@ -16,10 +16,9 @@
   },
   "engines": {
     "node": ">=0.12.0",
-    "homebridge": ">=0.2.0"
+    "homebridge": ">=0.3.4"
   },
   "dependencies": {
-    "squeezenode": "^0.1.0",
-    "logitechmediaserver": "^0.0.3"
+    "squeezenode": "^0.1.0"
   }
 }

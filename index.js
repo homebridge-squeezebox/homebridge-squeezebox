@@ -17,7 +17,7 @@ module.exports = function(homebridge) {
 
 function makeVolumeCharacteristic(){
 	VolumeCharacteristic = function(){
-		Characteristic.call(this, 'Volume', '91288267-5678-49B2-8D22-F57BE995AA93');
+		Characteristic.call(this, 'Audio Volume', '00001001-0000-1000-8000-135D67EC4377');
 		this.setProps({
 			format: Characteristic.Formats.INT,
 			unit: Characteristic.Units.PERCENTAGE,
@@ -76,6 +76,13 @@ SqueezeboxAccessory.prototype.setPowerState = function(state, callback){
 	Squeezebox.players[this.config.playerid].power(state);
 	callback(null);
 };
+
+SqueezeboxAccessory.prototype.getVolume = function(value,callback){
+	Squeezebox.players[this.config.playerid].setVolume(function(res){
+	//	volume = parseInt(res.result,10)
+	});
+	callback(null);
+};
 SqueezeboxAccessory.prototype.setVolume = function(value,callback){
 	Squeezebox.players[this.config.playerid].setVolume(value);
 	callback(null);
@@ -90,14 +97,15 @@ SqueezeboxAccessory.prototype.getServices = function(){
 		.setCharacteristic(Characteristic.Model, this.config.model)
 		.setCharacteristic(Characteristic.SerialNumber, this.config.playerid);
 	
-	this.radioService = new Service.Switch(this.config.name);
-	this.radioService
+	this.volumeService = new Service.Switch(this.config.name);
+	this.volumeService
 		.getCharacteristic(Characteristic.On)
 		.on('set', this.setPowerState.bind(this));
 		
-	this.radioService
+	this.volumeService
 		.addCharacteristic(VolumeCharacteristic)
+		.on('get', this.getVolume.bind(this))
 		.on('set', this.setVolume.bind(this));
 	
-	return [this.informationService, this.radioService];
+	return [this.informationService, this.volumeService];
 };
