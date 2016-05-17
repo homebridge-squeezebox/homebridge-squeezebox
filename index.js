@@ -17,12 +17,12 @@ module.exports = function(homebridge) {
 
 function makeVolumeCharacteristic(){
 	VolumeCharacteristic = function(){
-		Characteristic.call(this, 'Audio Volume', '00001001-0000-1000-8000-135D67EC4377');
+		Characteristic.call(this, 'Volume', '00001001-0000-1000-8000-135D67EC4377');
 		this.setProps({
 			format: Characteristic.Formats.INT,
 			unit: Characteristic.Units.PERCENTAGE,
-			maxValue: 100,
 			minValue: 0,
+			maxValue: 100,
 			minStep: 1,
 			perms: [Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY]
 		});
@@ -30,6 +30,8 @@ function makeVolumeCharacteristic(){
 	};
 	inherits(VolumeCharacteristic, Characteristic);
 }
+
+
 
 function SqueezeboxPlatform(log,config,api){
 	this.log = log;
@@ -77,15 +79,19 @@ SqueezeboxAccessory.prototype.setPowerState = function(state, callback){
 	callback(null);
 };
 
-SqueezeboxAccessory.prototype.getVolume = function(value,callback){
-	Squeezebox.players[this.config.playerid].setVolume(function(res){
-	//	volume = parseInt(res.result,10)
+SqueezeboxAccessory.prototype.getVolume = function(){
+	Squeezebox.players[this.config.playerid].getVolume(function(res){
+		volume = parseInt(res.result,10)
 	});
-	callback(null);
+	return;
 };
 SqueezeboxAccessory.prototype.setVolume = function(value,callback){
-	Squeezebox.players[this.config.playerid].setVolume(value);
-	callback(null);
+	try {
+		Squeezebox.players[this.config.playerid].setVolume(value);
+		callback(null);
+	} catch(e){
+		this.log(e);
+	}
 };
 
 SqueezeboxAccessory.prototype.getServices = function(){
@@ -97,15 +103,17 @@ SqueezeboxAccessory.prototype.getServices = function(){
 		.setCharacteristic(Characteristic.Model, this.config.model)
 		.setCharacteristic(Characteristic.SerialNumber, this.config.playerid);
 	
-	this.volumeService = new Service.Switch(this.config.name);
-	this.volumeService
+	// Power state
+	this.playerService = new Service.Switch(this.config.name);
+	this.playerService
 		.getCharacteristic(Characteristic.On)
 		.on('set', this.setPowerState.bind(this));
-		
-	this.volumeService
+	
+	// Volume
+	this.playerService
 		.addCharacteristic(VolumeCharacteristic)
-		.on('get', this.getVolume.bind(this))
+	//	.on('get', this.getVolume.bind(this))
 		.on('set', this.setVolume.bind(this));
 	
-	return [this.informationService, this.volumeService];
+	return [this.informationService, this.playerService];
 };
