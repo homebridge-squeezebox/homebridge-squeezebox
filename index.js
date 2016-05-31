@@ -86,7 +86,7 @@ SqueezeboxAccessory.prototype.getPowerState = function(callback){
 	});
 };
 
-SqueezeboxAccessory.prototype.getVolume = function(){
+SqueezeboxAccessory.prototype.getVolume = function(callback){
 	Squeezebox.players[this.config.playerid].getVolume(function(res){
 		var volume = Number(res.result);
 		callback(null, volume);
