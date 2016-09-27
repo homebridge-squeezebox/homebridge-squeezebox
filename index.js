@@ -75,21 +75,33 @@ SqueezeboxAccessory.prototype.setPlayState = function(state, callback){
 	callback(null);
 };
 SqueezeboxAccessory.prototype.setPowerState = function(state, callback){
-	Squeezebox.players[this.config.playerid].power(state);
-	callback(null);
+	try {
+		Squeezebox.players[this.config.playerid].power(state);
+		callback(null);
+	} catch(e){
+		this.log(e);
+	}
 };
 
 SqueezeboxAccessory.prototype.getPowerState = function(callback){
 	Squeezebox.players[this.config.playerid].getStatus(function(res){
-		var on = (Number(res.result.power) == 1);
-		callback(null, on);
+		try {
+			var on = (Number(res.result.power) == 1);
+			callback(null, on);
+		} catch(e){
+			this.log(e)
+		}
 	});
 };
 
 SqueezeboxAccessory.prototype.getVolume = function(callback){
 	Squeezebox.players[this.config.playerid].getVolume(function(res){
-		var volume = Number(res.result);
-		callback(null, volume);
+		try {
+			var volume = Number(res.result);
+			callback(null, volume);
+		} catch(e){
+			this.log(e);
+		}
 	});
 };
 SqueezeboxAccessory.prototype.setVolume = function(value,callback){
