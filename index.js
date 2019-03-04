@@ -1,5 +1,5 @@
 var inherits = require('util').inherits,
-	LMS = require('squeezenode'),
+	LMS = require('squeezenode-lordpengwin'),
 	Squeezebox;
 
 var Accessory, Characteristic, Service, VolumeCharacteristic, UUIDGen;
@@ -41,9 +41,12 @@ function SqueezeboxPlatform(log,config,api){
 SqueezeboxPlatform.prototype.accessories = function(callback){
 	var self = this;
 
-	Squeezebox = new LMS('http://'+this.config.host, this.config.port);
+	self.log(this.config)
+
+	Squeezebox = new LMS('http://'+this.config.host, this.config.port, this.config.username, this.config.password);
 
 	Squeezebox.on('register', function(){
+		self.log('Getting players...')
 		Squeezebox.getPlayers(function(response){
 			var players = [];
 			if (response.ok && response.result.length){
@@ -53,6 +56,8 @@ SqueezeboxPlatform.prototype.accessories = function(callback){
 					players.push(accessory);
 				});
 				callback(players);
+			} else {
+				self.log(response)
 			}
 		});
 	});
@@ -131,7 +136,7 @@ SqueezeboxAccessory.prototype.getServices = function(){
 
 	// Volume
 	this.playerService
-		.addCharacteristic(VolumeCharacteristic)
+		.addCharacteristic(Characteristic.Volume)
 		.on('get', this.getVolume.bind(this))
 		.on('set', this.setVolume.bind(this));
 
