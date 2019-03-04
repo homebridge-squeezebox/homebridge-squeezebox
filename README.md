@@ -18,7 +18,9 @@ Example config.json
 			"platform": "Squeezebox",
 			"name": "Squeezebox",
 			"host": "127.0.0.1",
-			"port": 9000
+			"port": 9000,
+			"username": "username",
+			"password": "password"
 		}
 	}
 }
