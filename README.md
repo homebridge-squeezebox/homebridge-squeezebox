@@ -32,7 +32,7 @@ Example config.json
 			"username": "username",
 			"password": "password"
 		}
-	}
+	]
 }
 ```
 
