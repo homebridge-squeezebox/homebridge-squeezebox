@@ -81,7 +81,13 @@ SqueezeboxAccessory.prototype.setPlayState = function(state, callback){
 };
 SqueezeboxAccessory.prototype.setPowerState = function(state, callback){
 	try {
+	if (state){
 		Squeezebox.players[this.config.playerid].power(state);
+		Squeezebox.players[this.config.playerid].play();
+	} else {
+		Squeezebox.players[this.config.playerid].pause();
+		Squeezebox.players[this.config.playerid].power(state);
+	}
 		callback(null);
 	} catch(e){
 		this.log(e);
@@ -128,7 +134,7 @@ SqueezeboxAccessory.prototype.getServices = function(){
 		.setCharacteristic(Characteristic.SerialNumber, this.config.playerid);
 
 	// Power state
-	this.playerService = new Service.Switch(this.config.name);
+	this.playerService = new Service.Fan(this.config.name);
 	this.playerService
 		.getCharacteristic(Characteristic.On)
 		.on('set', this.setPowerState.bind(this))
@@ -136,7 +142,7 @@ SqueezeboxAccessory.prototype.getServices = function(){
 
 	// Volume
 	this.playerService
-		.addCharacteristic(Characteristic.Volume)
+		.addCharacteristic(Characteristic.RotationSpeed)
 		.on('get', this.getVolume.bind(this))
 		.on('set', this.setVolume.bind(this));
 
