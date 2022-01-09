@@ -13,10 +13,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/greebowarrior/homebridge-squeezebox.git"
+    "url": "git://github.com/homebridge-squeezebox/homebridge-squeezebox.git"
   },
   "bugs": {
-    "url": "http://github.com/greebowarrior/homebridge-squeezebox/issues"
+    "url": "http://github.com/homebridge-squeezebox/homebridge-squeezebox/issues"
   },
   "engines": {
     "node": ">=0.12.0",
