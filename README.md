@@ -1,7 +1,17 @@
-# homebridge-squeezebox
+# homebridge-squeezebox v 0.1.6
 
 Work in progress, may or may not work for you.
-Tested with Squeezebox Radio and Squeezebox Duet.
+
+When switching the player on, it starts playing, i.e. 
+
+1. the player is switched on, and
+2. replay is started
+
+When the player is switched off,
+
+1. replay is paused, and
+2. the player is switched off
+
 
 Example config.json
 
@@ -22,7 +32,7 @@ Example config.json
 			"username": "username",
 			"password": "password"
 		}
-	}
+	]
 }
 ```
 
