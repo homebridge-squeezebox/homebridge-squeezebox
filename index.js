@@ -83,7 +83,7 @@ SqueezeboxAccessory.prototype.setPowerState = function (state, callback) {
 	try {
 		Squeezebox.players[this.config.playerid].power(state);
 		if (state) {
-			// Squeezebox.players[this.config.playerid].play();
+			Squeezebox.players[this.config.playerid].play();
 		} else {
 			// Squeezebox.players[this.config.playerid].pause();
 		}
