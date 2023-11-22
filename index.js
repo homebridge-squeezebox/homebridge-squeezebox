@@ -4,7 +4,7 @@ var inherits = require('util').inherits,
 
 var Accessory, Characteristic, Service, VolumeCharacteristic, UUIDGen;
 
-module.exports = function(homebridge) {
+module.exports = function (homebridge) {
 	// Accessory must be created from PlatformAccessory Constructor
 	Accessory = homebridge.platformAccessory;
 	Service = homebridge.hap.Service;
@@ -15,8 +15,8 @@ module.exports = function(homebridge) {
 	homebridge.registerPlatform("homebridge-squeezebox", "Squeezebox", SqueezeboxPlatform, true);
 };
 
-function makeVolumeCharacteristic(){
-	VolumeCharacteristic = function(){
+function makeVolumeCharacteristic() {
+	VolumeCharacteristic = function () {
 		Characteristic.call(this, 'Volume', '00001001-0000-1000-8000-135D67EC4377');
 		this.setProps({
 			format: Characteristic.Formats.INT,
@@ -33,24 +33,24 @@ function makeVolumeCharacteristic(){
 
 
 
-function SqueezeboxPlatform(log,config,api){
+function SqueezeboxPlatform(log, config, api) {
 	this.log = log;
 	this.config = config;
 }
 
-SqueezeboxPlatform.prototype.accessories = function(callback){
+SqueezeboxPlatform.prototype.accessories = function (callback) {
 	var self = this;
 
 	self.log(this.config)
 
-	Squeezebox = new LMS('http://'+this.config.host, this.config.port, this.config.username, this.config.password);
+	Squeezebox = new LMS('http://' + this.config.host, this.config.port, this.config.username, this.config.password);
 
-	Squeezebox.on('register', function(){
+	Squeezebox.on('register', function () {
 		self.log('Getting players...')
-		Squeezebox.getPlayers(function(response){
+		Squeezebox.getPlayers(function (response) {
 			var players = [];
-			if (response.ok && response.result.length){
-				response.result.forEach(function(player){
+			if (response.ok && response.result.length) {
+				response.result.forEach(function (player) {
 					// add more magic?
 					var accessory = new SqueezeboxAccessory(self.log, player);
 					players.push(accessory);
@@ -65,66 +65,66 @@ SqueezeboxPlatform.prototype.accessories = function(callback){
 
 
 
-function SqueezeboxAccessory(log, config){
+function SqueezeboxAccessory(log, config) {
 	this.log = log;
 	this.name = config.name;
 	this.config = config;
 }
 
-SqueezeboxAccessory.prototype.setPlayState = function(state, callback){
-	if (state){
+SqueezeboxAccessory.prototype.setPlayState = function (state, callback) {
+	if (state) {
 		Squeezebox.players[this.config.playerid].play();
 	} else {
 		Squeezebox.players[this.config.playerid].pause();
 	}
 	callback(null);
 };
-SqueezeboxAccessory.prototype.setPowerState = function(state, callback){
+SqueezeboxAccessory.prototype.setPowerState = function (state, callback) {
 	try {
-	if (state){
-		Squeezebox.players[this.config.playerid].power(state);
-		Squeezebox.players[this.config.playerid].play();
-	} else {
-		Squeezebox.players[this.config.playerid].pause();
-		Squeezebox.players[this.config.playerid].power(state);
-	}
+		if (state) {
+			// Squeezebox.players[this.config.playerid].power(state);
+			Squeezebox.players[this.config.playerid].play();
+		} else {
+			Squeezebox.players[this.config.playerid].pause();
+			// Squeezebox.players[this.config.playerid].power(state);
+		}
 		callback(null);
-	} catch(e){
+	} catch (e) {
 		this.log(e);
 	}
 };
 
-SqueezeboxAccessory.prototype.getPowerState = function(callback){
-	Squeezebox.players[this.config.playerid].getStatus(function(res){
+SqueezeboxAccessory.prototype.getPowerState = function (callback) {
+	Squeezebox.players[this.config.playerid].getStatus(function (res) {
 		try {
 			var on = (Number(res.result.power) == 1);
 			callback(null, on);
-		} catch(e){
+		} catch (e) {
 			this.log(e)
 		}
 	});
 };
 
-SqueezeboxAccessory.prototype.getVolume = function(callback){
-	Squeezebox.players[this.config.playerid].getVolume(function(res){
+SqueezeboxAccessory.prototype.getVolume = function (callback) {
+	Squeezebox.players[this.config.playerid].getVolume(function (res) {
 		try {
 			var volume = Number(res.result);
 			callback(null, volume);
-		} catch(e){
+		} catch (e) {
 			this.log(e);
 		}
 	});
 };
-SqueezeboxAccessory.prototype.setVolume = function(value,callback){
+SqueezeboxAccessory.prototype.setVolume = function (value, callback) {
 	try {
 		Squeezebox.players[this.config.playerid].setVolume(value);
 		callback(null);
-	} catch(e){
+	} catch (e) {
 		this.log(e);
 	}
 };
 
-SqueezeboxAccessory.prototype.getServices = function(){
+SqueezeboxAccessory.prototype.getServices = function () {
 	this.informationService = new Service.AccessoryInformation();
 
 	this.informationService
