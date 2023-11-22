@@ -81,12 +81,11 @@ SqueezeboxAccessory.prototype.setPlayState = function (state, callback) {
 };
 SqueezeboxAccessory.prototype.setPowerState = function (state, callback) {
 	try {
+		Squeezebox.players[this.config.playerid].power(state);
 		if (state) {
-			// Squeezebox.players[this.config.playerid].power(state);
-			Squeezebox.players[this.config.playerid].play();
+			// Squeezebox.players[this.config.playerid].play();
 		} else {
-			Squeezebox.players[this.config.playerid].pause();
-			// Squeezebox.players[this.config.playerid].power(state);
+			// Squeezebox.players[this.config.playerid].pause();
 		}
 		callback(null);
 	} catch (e) {
