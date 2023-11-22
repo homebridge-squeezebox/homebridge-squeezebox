@@ -1,6 +1,6 @@
 {
   "name": "homebridge-squeezebox",
-  "version": "0.1.9-beta.0",
+  "version": "0.1.10-beta.0",
   "author": "Martin Purcell <martin.purcell@gmail.com>",
   "description": "Squeezebox plugin for homebridge: https://github.com/homebridge-squeezebox/homebridge-squeezebox",
   "license": "ISC",
